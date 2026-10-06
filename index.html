@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Operation Goldfist — Spy Revision</title>
+<style>
+:root{
+  --bg:#0b1220;
+  --panel:#121c2e;
+  --panel2:#17243a;
+  --text:#f4f7fb;
+  --muted:#aeb9c9;
+  --accent:#d84646;
+  --accent2:#4fb4d8;
+  --gold:#d6b35c;
+  --ok:#5bc48a;
+  --danger:#d96262;
+  --line:rgba(255,255,255,.11);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:
+radial-gradient(circle at 15% 20%,rgba(79,180,216,.09),transparent 30%),
+radial-gradient(circle at 85% 15%,rgba(216,70,70,.08),transparent 28%),
+linear-gradient(180deg,#09111e,#0d1728 55%,#0a1321);
+color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;min-height:100%}
+body:before{
+content:"";position:fixed;inset:0;pointer-events:none;opacity:.16;
+background-image:
+linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+background-size:34px 34px
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.wrap{max-width:1400px;margin:auto;padding:18px}
+.topbar{display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.target{
+width:42px;height:42px;border:2px solid var(--accent2);border-radius:50%;position:relative;
+box-shadow:0 0 0 7px rgba(79,180,216,.09), inset 0 0 20px rgba(79,180,216,.08)
+}
+.target:before,.target:after{content:"";position:absolute;background:var(--accent2);opacity:.8}
+.target:before{width:2px;height:52px;left:18px;top:-7px}
+.target:after{height:2px;width:52px;left:-7px;top:18px}
+h1{font-size:clamp(1.4rem,2.5vw,2.3rem);margin:0;letter-spacing:.02em}
+.subtitle{color:var(--muted);font-size:.95rem}
+.badge{border:1px solid var(--line);background:rgba(255,255,255,.04);padding:8px 11px;border-radius:999px;color:var(--muted)}
+.panel{background:rgba(18,28,46,.93);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:0 16px 40px rgba(0,0,0,.22)}
+.setup{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:850px){.setup{grid-template-columns:1fr}}
+.setup h2,.game h2{margin:.1rem 0 .8rem;font-size:1.15rem}
+.rangeLine{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select,input[type=text]{background:#0d1727;border:1px solid var(--line);color:var(--text);padding:11px 12px;border-radius:12px}
+select{min-width:110px}
+.teamNames{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+@media(max-width:700px){.teamNames{grid-template-columns:1fr 1fr}}
+.btn{border:0;border-radius:12px;padding:11px 14px;background:var(--accent2);color:#06111a;font-weight:700}
+.btn.secondary{background:#24334d;color:var(--text);border:1px solid var(--line)}
+.btn.red{background:var(--accent);color:white}
+.btn.gold{background:var(--gold);color:#1d1605}
+.btn.small{padding:7px 9px;border-radius:9px;font-size:.9rem}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.game{display:none;margin-top:14px}
+.scoreboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px;margin-bottom:14px}
+.teamCard{background:linear-gradient(180deg,#16233a,#111b2c);border:1px solid var(--line);border-radius:15px;padding:10px}
+.teamCard.active{outline:2px solid var(--gold);box-shadow:0 0 0 4px rgba(214,179,92,.12)}
+.teamName{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.score{font-size:2rem;font-weight:900;line-height:1.05;margin:5px 0}
+.scoreBtns{display:flex;gap:5px;flex-wrap:wrap}
+.categoryRow{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cat{padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:#101a2b;color:var(--text)}
+.cat.active{background:var(--accent2);color:#07131b;border-color:transparent;font-weight:800}
+.questionBox{min-height:330px;display:flex;flex-direction:column;justify-content:space-between;background:
+linear-gradient(180deg,rgba(255,255,255,.025),rgba(255,255,255,.01));
+border:1px solid var(--line);border-radius:18px;padding:18px}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:.9rem}
+.q{font-size:clamp(1.35rem,2.8vw,2.4rem);font-weight:800;line-height:1.25;margin:20px 0}
+.answer{display:none;background:#0e1c1a;border-left:4px solid var(--ok);padding:14px;border-radius:10px;font-size:1.12rem}
+.footerControls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:15px}
+.leftGroup,.rightGroup{display:flex;gap:8px;flex-wrap:wrap}
+.progress{height:8px;background:#0a1321;border-radius:999px;overflow:hidden;margin-top:12px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--accent2),var(--gold));width:0}
+.notice{color:var(--muted);font-size:.9rem;margin-top:10px}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="target" aria-hidden="true"></div>
+      <div>
+        <h1>Operation Goldfist — Mission Control</h1>
+        <div class="subtitle">3e revision game · Vocabulary · Superlatives · Capacity · Course</div>
+      </div>
+    </div>
+    <div class="badge">Classroom mode</div>
+  </div>
+
+  <section class="panel setup" id="setup">
+    <div>
+      <h2>1. Choose the number of teams</h2>
+      <div class="rangeLine">
+        <label for="teamCount">Teams:</label>
+        <select id="teamCount">
+          <option>4</option><option>5</option><option>6</option>
+          <option>7</option><option>8</option><option>9</option>
+        </select>
+        <button class="btn secondary" id="makeTeams">Create teams</button>
+      </div>
+      <div class="teamNames" id="teamNames"></div>
+    </div>
+
+    <div>
+      <h2>2. Mission settings</h2>
+      <div class="rangeLine">
+        <label for="roundLength">Questions:</label>
+        <select id="roundLength">
+          <option value="15">15</option>
+          <option value="20" selected>20</option>
+          <option value="25">25</option>
+          <option value="30">30</option>
+        </select>
+      </div>
+      <div class="notice">Questions are drawn without repetition. You can change category at any time.</div>
+      <div class="controls">
+        <button class="btn gold" id="startGame">Start mission</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="game" id="game">
+    <div class="scoreboard" id="scoreboard"></div>
+
+    <div class="panel">
+      <div class="categoryRow" id="categories"></div>
+      <div class="questionBox">
+        <div>
+          <div class="meta">
+            <span id="qCount">Question 1</span>
+            <span>•</span>
+            <span id="qCategory">Vocabulary</span>
+            <span>•</span>
+            <span id="qValue">2 pts</span>
+          </div>
+          <div class="q" id="question">Ready?</div>
+          <div class="answer" id="answer"></div>
+        </div>
+
+        <div>
+          <div class="progress"><div id="progressBar"></div></div>
+          <div class="footerControls">
+            <div class="leftGroup">
+              <button class="btn secondary" id="showAnswer">Show answer</button>
+              <button class="btn" id="nextQuestion">Next question</button>
+            </div>
+            <div class="rightGroup">
+              <button class="btn secondary" id="randomTeam">Random team</button>
+              <button class="btn red" id="resetGame">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+const bank = [
+  // VOCABULARY
+  {c:"Vocabulary",p:1,q:"What is a recruit?",a:"A new person who has just joined an organisation or training programme."},
+  {c:"Vocabulary",p:1,q:"Give a synonym for “cadet”.",a:"Recruit / trainee."},
+  {c:"Vocabulary",p:1,q:"What does “mastermind” mean?",a:"A very intelligent person who plans something complicated."},
+  {c:"Vocabulary",p:1,q:"Give a synonym for “evil”.",a:"Bad / wicked."},
+  {c:"Vocabulary",p:1,q:"What does “bring down” mean in a spy story?",a:"Defeat or stop an enemy."},
+  {c:"Vocabulary",p:1,q:"Translate: “décrypter / décoder”.",a:"Decipher / break a code."},
+  {c:"Vocabulary",p:1,q:"What does “go undercover” mean?",a:"Work secretly with a false identity."},
+  {c:"Vocabulary",p:1,q:"Translate: “résoudre des énigmes”.",a:"Solve puzzles."},
+  {c:"Vocabulary",p:1,q:"What is a contestant?",a:"A person who takes part in a competition or TV show."},
+  {c:"Vocabulary",p:1,q:"What does “apply for” mean?",a:"Ask officially to be considered for a place or position."},
+  {c:"Vocabulary",p:1,q:"Give an English adjective for “courageux”.",a:"Brave."},
+  {c:"Vocabulary",p:1,q:"Give an English adjective for “déterminé”.",a:"Determined."},
+  {c:"Vocabulary",p:1,q:"Give an English adjective for “persuasif”.",a:"Persuasive."},
+  {c:"Vocabulary",p:1,q:"Give an English adjective for “doué / talentueux”.",a:"Talented."},
+  {c:"Vocabulary",p:1,q:"Give an English adjective for “difficile mais stimulant”.",a:"Challenging."},
+  {c:"Vocabulary",p:1,q:"What is espionage?",a:"The activity of spying or collecting secret information."},
+  {c:"Vocabulary",p:1,q:"Translate: “mission confidentielle”.",a:"Confidential mission."},
+  {c:"Vocabulary",p:1,q:"What does “detect” mean?",a:"Notice, discover or identify something."},
+
+  // SUPERLATIVES
+  {c:"Superlatives",p:2,q:"Complete: strong → the ______",a:"the strongest"},
+  {c:"Superlatives",p:2,q:"Complete: quick → the ______",a:"the quickest"},
+  {c:"Superlatives",p:2,q:"Complete: funny → the ______",a:"the funniest"},
+  {c:"Superlatives",p:2,q:"Complete: good → the ______",a:"the best"},
+  {c:"Superlatives",p:2,q:"Complete: talented → the ______",a:"the most talented"},
+  {c:"Superlatives",p:2,q:"Complete: arrogant → the ______",a:"the most arrogant"},
+  {c:"Superlatives",p:2,q:"Correct the sentence: “She is the most cleverest spy.”",a:"She is the cleverest spy."},
+  {c:"Superlatives",p:2,q:"Make a superlative sentence with “brave”.",a:"Example: She is the bravest recruit."},
+  {c:"Superlatives",p:2,q:"Which is correct: “the more intelligent” or “the most intelligent”?",a:"The most intelligent."},
+  {c:"Superlatives",p:2,q:"What word usually comes before a superlative?",a:"The."},
+
+  // CAPACITY
+  {c:"Capacity",p:2,q:"Complete: A spy ___ break codes.",a:"can"},
+  {c:"Capacity",p:2,q:"Complete with be able to: “She ___ solve difficult puzzles.”",a:"She is able to solve difficult puzzles."},
+  {c:"Capacity",p:2,q:"Complete with be capable of: “He ___ working undercover.”",a:"He is capable of working undercover."},
+  {c:"Capacity",p:2,q:"Complete: “She is good at ___ codes.”",a:"breaking / deciphering"},
+  {c:"Capacity",p:2,q:"Which form follows “can”: infinitive or -ing?",a:"The infinitive without “to”."},
+  {c:"Capacity",p:2,q:"Which form follows “be capable of”?",a:"Verb + -ing."},
+  {c:"Capacity",p:2,q:"Correct: “He can to decipher codes.”",a:"He can decipher codes."},
+  {c:"Capacity",p:2,q:"Correct: “She is capable to solve puzzles.”",a:"She is capable of solving puzzles."},
+
+  // COURSE / DOCUMENTS
+  {c:"Course",p:3,q:"What kind of document was the first Spy School document?",a:"A poster."},
+  {c:"Course",p:3,q:"Why was the Spy School poster used first?",a:"As an anticipation document to make hypotheses about the programme."},
+  {c:"Course",p:3,q:"What could you say about the purpose of the Spy School poster?",a:"It promotes / advertises the programme and makes people want to watch or join."},
+  {c:"Course",p:3,q:"Who is the likely target audience of the Spy School poster?",a:"Young viewers / children / families interested in adventure and spies."},
+  {c:"Course",p:3,q:"What do children learn to do in Spy School?",a:"They train as spies, solve puzzles, break codes and develop physical and problem-solving skills."},
+  {c:"Course",p:3,q:"Who must the children try to stop in Spy School?",a:"Goldfist."},
+  {c:"Course",p:3,q:"What kind of document is The Recruit image?",a:"A book cover."},
+  {c:"Course",p:3,q:"What is CHERUB?",a:"An organisation that trains young agents for espionage missions."},
+  {c:"Course",p:3,q:"What do CHERUB agents do?",a:"They collect information, carry out surveillance and take part in espionage missions."},
+  {c:"Course",p:3,q:"Who is James in The Recruit?",a:"The latest CHERUB recruit."},
+
+  // METHODOLOGY
+  {c:"Methodology",p:2,q:"Name two things to identify when presenting a document.",a:"Type, subject/theme, creator/author, date, source, purpose or target audience."},
+  {c:"Methodology",p:2,q:"How can you begin describing an image?",a:"In the foreground… / In the background…"},
+  {c:"Methodology",p:2,q:"What should you mention if a logo is visible?",a:"Describe the logo and explain what it suggests about the document."},
+  {c:"Methodology",p:2,q:"What should you say about colours in an image?",a:"Describe the main colours and explain the atmosphere or effect they create."},
+  {c:"Methodology",p:2,q:"What does “target audience” mean?",a:"The people the document is intended for."},
+  {c:"Methodology",p:2,q:"What does “purpose” mean?",a:"The objective of the document: inform, advertise, persuade, entertain, etc."},
+  {c:"Methodology",p:2,q:"If no publication date is given, what should you do?",a:"Do not invent one. Say that the date is not given."}
+];
+
+let teams = [];
+let used = new Set();
+let category = "All";
+let totalQuestions = 20;
+let current = null;
+let answeredCount = 0;
+
+const teamCount = document.getElementById("teamCount");
+const teamNames = document.getElementById("teamNames");
+const scoreboard = document.getElementById("scoreboard");
+const game = document.getElementById("game");
+const setup = document.getElementById("setup");
+const question = document.getElementById("question");
+const answer = document.getElementById("answer");
+const qCategory = document.getElementById("qCategory");
+const qValue = document.getElementById("qValue");
+const qCount = document.getElementById("qCount");
+const progressBar = document.getElementById("progressBar");
+
+function createTeamInputs(){
+  const n = Number(teamCount.value);
+  teamNames.innerHTML = "";
+  for(let i=0;i<n;i++){
+    const input=document.createElement("input");
+    input.type="text";
+    input.value=`Team ${i+1}`;
+    input.maxLength=18;
+    teamNames.appendChild(input);
+  }
+}
+createTeamInputs();
+document.getElementById("makeTeams").addEventListener("click",createTeamInputs);
+teamCount.addEventListener("change",createTeamInputs);
+
+function renderScoreboard(){
+  scoreboard.innerHTML="";
+  teams.forEach((t,i)=>{
+    const card=document.createElement("div");
+    card.className="teamCard"+(t.active?" active":"");
+    card.innerHTML=`
+      <div class="teamName">${escapeHtml(t.name)}</div>
+      <div class="score">${t.score}</div>
+      <div class="scoreBtns">
+        <button class="btn small" data-i="${i}" data-d="1">+1</button>
+        <button class="btn small" data-i="${i}" data-d="2">+2</button>
+        <button class="btn small gold" data-i="${i}" data-d="3">+3</button>
+        <button class="btn small secondary" data-i="${i}" data-d="-1">−1</button>
+      </div>`;
+    card.addEventListener("click",e=>{
+      if(e.target.tagName==="BUTTON") return;
+      teams.forEach(x=>x.active=false); t.active=true; renderScoreboard();
+    });
+    scoreboard.appendChild(card);
+  });
+  scoreboard.querySelectorAll("button").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const i=Number(b.dataset.i), d=Number(b.dataset.d);
+      teams[i].score += d;
+      renderScoreboard();
+    });
+  });
+}
+
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+
+function renderCategories(){
+  const cats=["All","Vocabulary","Superlatives","Capacity","Course","Methodology"];
+  const box=document.getElementById("categories");
+  box.innerHTML="";
+  cats.forEach(c=>{
+    const b=document.createElement("button");
+    b.className="cat"+(c===category?" active":"");
+    b.textContent=c;
+    b.addEventListener("click",()=>{category=c;renderCategories();});
+    box.appendChild(b);
+  });
+}
+
+function pickQuestion(){
+  let pool=bank.map((x,i)=>({...x,i})).filter(x=>!used.has(x.i));
+  if(category!=="All") pool=pool.filter(x=>x.c===category);
+  if(pool.length===0){
+    answer.style.display="block";
+    answer.textContent="No unused questions left in this category. Choose another category or reset the game.";
+    return;
+  }
+  current=pool[Math.floor(Math.random()*pool.length)];
+  used.add(current.i);
+  answeredCount++;
+  question.textContent=current.q;
+  answer.textContent=current.a;
+  answer.style.display="none";
+  qCategory.textContent=current.c;
+  qValue.textContent=`${current.p} pt${current.p>1?"s":""}`;
+  qCount.textContent=`Question ${answeredCount} / ${totalQuestions}`;
+  progressBar.style.width=Math.min(100,(answeredCount/totalQuestions)*100)+"%";
+  if(answeredCount>totalQuestions){
+    qCount.textContent=`Bonus question ${answeredCount-totalQuestions}`;
+  }
+}
+
+document.getElementById("startGame").addEventListener("click",()=>{
+  const inputs=[...teamNames.querySelectorAll("input")];
+  if(inputs.length<4) createTeamInputs();
+  teams=[...teamNames.querySelectorAll("input")].map((x,i)=>({name:x.value.trim()||`Team ${i+1}`,score:0,active:i===0}));
+  totalQuestions=Number(document.getElementById("roundLength").value);
+  used=new Set(); answeredCount=0; category="All";
+  setup.style.display="none"; game.style.display="block";
+  renderScoreboard();renderCategories();pickQuestion();
+});
+
+document.getElementById("showAnswer").addEventListener("click",()=>{
+  answer.style.display=answer.style.display==="block"?"none":"block";
+});
+
+document.getElementById("nextQuestion").addEventListener("click",pickQuestion);
+
+document.getElementById("randomTeam").addEventListener("click",()=>{
+  const i=Math.floor(Math.random()*teams.length);
+  teams.forEach((t,j)=>t.active=j===i);
+  renderScoreboard();
+});
+
+document.getElementById("resetGame").addEventListener("click",()=>{
+  if(!confirm("Reset the whole game and all scores?")) return;
+  game.style.display="none";
+  setup.style.display="grid";
+  teams=[];used=new Set();answeredCount=0;
+});
+</script>
+</body>
+</html>
