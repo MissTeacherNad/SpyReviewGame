@@ -15,11 +15,11 @@ h1{font-size:clamp(1.4rem,2.5vw,2.3rem);margin:0;color:#355f83}.subtitle,.notice
 select,input[type=text]{background:#fff;border:1px solid var(--line);color:var(--text);padding:11px 12px;border-radius:8px}select{min-width:100px}.teamNames{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.teamNames input{min-width:0;width:100%}
 .btn{border:0;border-radius:8px;padding:11px 14px;background:var(--accent);color:#183952;font-weight:700}.btn.secondary{background:#e8f0f6;color:#355f83;border:1px solid var(--line)}.btn.red{background:var(--red);color:white}.btn.gold{background:var(--gold);color:#584719}.btn.green{background:var(--green);color:#194d33}.btn.small{padding:8px 10px;font-size:.9rem}
 .controls,.leftGroup,.rightGroup,.categoryRow{display:flex;gap:8px;flex-wrap:wrap}.controls{margin-top:12px}fieldset{border:1px solid var(--line);border-radius:8px;padding:12px;margin:0 0 10px}fieldset label{display:inline-flex;gap:7px;align-items:center;margin:6px 14px 6px 0}fieldset input{width:18px;height:18px;accent-color:#648aaa}#selectionSummary{line-height:1.5;font-size:.95rem}.notice{font-size:.9rem;margin-top:10px;line-height:1.5}.game{display:none;margin-top:14px}
-.scoreboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}.teamCard{background:#edf4f9;border:1px solid var(--line);border-radius:10px;padding:10px;position:relative}.teamCard.active{outline:2px solid #648aaa}.teamName{font-weight:700;overflow-wrap:anywhere;padding-right:18px}.score{font-size:2rem;font-weight:800;line-height:1.05;margin:5px 0;color:#355f83}.shield{position:absolute;right:9px;top:9px}
+.scoreboard{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px}.teamCard{background:#edf4f9;border:1px solid var(--line);border-radius:10px;padding:10px;position:relative}.teamCard.active{outline:2px solid #648aaa}.teamName{font-weight:700;overflow-wrap:anywhere;padding-right:18px}.score{font-size:2rem;font-weight:800;line-height:1.05;margin:5px 0;color:#355f83}
 .mainGrid{display:grid;grid-template-columns:1fr 290px;gap:14px}.categoryRow{margin-bottom:12px}.cat{padding:9px 12px;border-radius:20px;border:1px solid var(--line);background:#f0f5f8;color:#355f83}.cat.active{background:#c7dfed;font-weight:700}
 .questionBox{min-height:330px;display:flex;flex-direction:column;justify-content:space-between;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.9rem}.q{font-size:clamp(1.35rem,2.8vw,2.2rem);font-weight:700;line-height:1.3;margin:20px 0;color:#355f83}.answer{display:none;background:#edf7f0;color:#267046;border-left:4px solid #589771;padding:14px;border-radius:8px;font-size:1.12rem}
 .footerControls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:15px}.progress{height:8px;background:#e5edf3;border-radius:20px;overflow:hidden;margin-top:12px}.progress>div{height:100%;background:#779cb9;width:0}.side h3{margin:.2rem 0 .6rem;font-size:1.05rem;color:#355f83}.sideCard{border:1px solid var(--line);background:#f4f8fb;border-radius:10px;padding:12px;margin-bottom:10px}.sideTitle{font-weight:700;margin-bottom:4px}.sideText{font-size:.92rem;line-height:1.4}.sideCard button{margin-top:10px}
-.eventBanner{display:none;border:1px solid #d3b974;background:#fff7e4;color:#725720;border-radius:10px;padding:13px;margin-bottom:12px;line-height:1.5}.finalBox{display:none;margin-top:12px;border:1px solid #b5cbdc;background:#f0f6fa;border-radius:10px;padding:14px}.hidden{display:none!important}#result{color:#397657;font-size:1rem}#timer{align-self:center;font-weight:700}
+.endBox{margin-top:12px;border:1px solid #b5cbdc;background:#f0f6fa;border-radius:10px;padding:14px}.hidden{display:none!important}#ranking li{padding:5px 0}#result{color:#397657;font-size:1rem}
 @media(max-width:980px){.mainGrid{grid-template-columns:1fr}}@media(max-width:900px){.setup{grid-template-columns:1fr}}@media(max-width:700px){.teamNames{grid-template-columns:1fr 1fr}.wrap{padding:10px}.questionBox{padding:14px}}
 </style>
 </head>
@@ -69,7 +69,7 @@ select,input[type=text]{background:#fff;border:1px solid var(--line);color:var(-
           <option value="4">4</option>
         </select>
       </div>
-      <div class="notice">Answer aloud. The teacher checks the answer and clicks Correct answer or Incorrect answer. The question bank limits the number of complete rounds. Each team has one turn per round. Backup events can transfer an answer to another team. Each question scores once. A spy event occurs every three questions. Scores and progress are saved on this browser.</div>
+      <div class="notice">Answer aloud. The teacher checks the answer and clicks Correct answer or Incorrect answer. Each correct answer earns 2 points, each incorrect answer earns 0. Every team has one question per round. The question bank limits the number of complete rounds. Each answer scores once. Scores and progress are saved on this browser.</div>
       <div class="controls">
         <button class="btn gold" id="startGame">Start mission</button>
         <button class="btn secondary hidden" id="resumeGame">Resume mission</button>
@@ -84,7 +84,7 @@ select,input[type=text]{background:#fff;border:1px solid var(--line);color:var(-
       <div class="panel">
         <div class="categoryRow" id="categories"></div>
 
-        <div class="eventBanner" id="eventBanner"></div>
+        
 
         <div class="questionBox">
           <div>
@@ -106,9 +106,6 @@ select,input[type=text]{background:#fff;border:1px solid var(--line);color:var(-
                 <button class="btn secondary" id="showAnswer">Show answer</button>
                 <button class="btn green" id="correctAnswer">Correct answer</button>
                 <button class="btn secondary" id="incorrectAnswer">Incorrect answer</button>
-                <button class="btn gold hidden" id="startTimer">Start 5 seconds</button>
-                <button class="btn secondary hidden" id="answerReceived">Answer received</button>
-                <span id="timer" aria-live="polite"></span>
                 <button class="btn" id="nextQuestion">Next question</button>
               </div>
               <div class="rightGroup">
@@ -120,40 +117,19 @@ select,input[type=text]{background:#fff;border:1px solid var(--line);color:var(-
           </div>
         </div>
 
-        <div class="finalBox" id="finalBox">
-          <strong>FINAL MISSION — STOP GOLDFIST</strong>
-          <p>When you are ready, launch the final mission. The team that solves it first earns <b>+5 points</b>.</p>
-          <button class="btn red" id="launchFinal">Launch final</button>
-          <div class="hidden" id="finalContent">
-            
-            <p><b>Challenge:</b> complete every selected task. The teacher checks the answers.</p>
-            <div id="finalChallenges"></div>
-            <p>Select the first team to complete all selected challenges, then award the final bonus.</p>
-          <label for="finalTeam">Winning team:</label> <select id="finalTeam"></select> <button class="btn green" id="awardFinal">Award +5</button><p id="finalResult" aria-live="polite"></p>
-          </div>
+        <div class="endBox" id="endBox" hidden>
+          <h2>MISSION COMPLETE</h2>
+          <p id="winnerLabel" aria-live="polite"></p>
+          <ol id="ranking"></ol>
         </div>
       </div>
 
       <aside class="panel side">
-        <h3>Mission tools</h3>
-        <div class="sideCard">
-          <div class="sideTitle">Shield</div>
-          <div class="sideText">A team with a shield ignores the next −1 penalty. Shields are awarded by spy events and consumed automatically.</div>
-          
-        </div>
-        <div class="sideCard">
-          <div class="sideTitle">Double points</div>
-          <div class="sideText">Each team can double one question during the mission, before revealing the answer.</div>
-          <button class="btn small gold" id="doublePoints">Double this question</button>
-        </div>
-        <div class="sideCard">
-          <div class="sideTitle">Intercept</div>
-          <div class="sideText">Every third question brings one spy event. Its effect and the answering team appear above the question.</div>
-        </div>
-        <div class="sideCard">
-          <div class="sideTitle">Active team</div>
-          <div class="sideText" id="activeTeamLabel">Team 1</div>
-        </div>
+        <h3>Mission rules</h3>
+        <div class="sideCard"><div class="sideTitle">Scoring</div><div class="sideText">Correct answer: +2 points.<br>Incorrect answer: 0 points.<br>The same value for every category.</div></div>
+        <div class="sideCard"><div class="sideTitle">Rounds</div><div class="sideText">Every team answers once per round. Questions are drawn only from the selected parts.</div></div>
+
+        <div class="sideCard"><div class="sideTitle">Active team</div><div class="sideText" id="activeTeamLabel">Team 1</div></div>
       </aside>
     </div>
   </section>
@@ -161,76 +137,76 @@ select,input[type=text]{background:#fff;border:1px solid var(--line);color:var(-
 
 <script>
 const bank = [
-  {c:"Vocabulary",p:1,q:"What is a recruit?",a:"A new person who has just joined an organisation or training programme."},
-  {c:"Vocabulary",p:1,q:"Give the synonym for “cadet” studied in class.",a:"Recruit."},
-  {c:"Vocabulary",p:1,q:"What does “mastermind” mean?",a:"A genius who plans something complicated."},
-  {c:"Vocabulary",p:1,q:"Give a synonym for “evil”.",a:"Bad / wicked."},
-  {c:"Vocabulary",p:1,q:"What does “bring down” mean in a spy story?",a:"Defeat or stop an enemy."},
-  {c:"Vocabulary",p:1,q:"Translate: “décrypter / décoder”.",a:"Decipher / break a code."},
-  {c:"Vocabulary",p:1,q:"What does “go undercover” mean?",a:"Work secretly with a false identity."},
-  {c:"Vocabulary",p:1,q:"Translate: “résoudre des énigmes”.",a:"Solve puzzles."},
-  {c:"Vocabulary",p:1,q:"What is a contestant?",a:"A person who takes part in a competition or TV show."},
-  {c:"Vocabulary",p:1,q:"What does “apply for” mean?",a:"Ask officially to be considered for a place or position."},
-  {c:"Vocabulary",p:1,q:"Give an English adjective for “courageux”.",a:"Brave."},
-  {c:"Vocabulary",p:1,q:"Give an English adjective for “déterminé”.",a:"Determined."},
-  {c:"Vocabulary",p:1,q:"Give an English adjective for “persuasif”.",a:"Persuasive."},
-  {c:"Vocabulary",p:1,q:"Give an English adjective for “doué / talentueux”.",a:"Talented."},
-  {c:"Vocabulary",p:1,q:"Give an English adjective for “difficile mais stimulant”.",a:"Challenging."},
-  {c:"Vocabulary",p:1,q:"Translate: “espionner / surveiller”.",a:"Spy on."},
-  {c:"Vocabulary",p:1,q:"Translate: “une affiche”.",a:"A poster."},
-  {c:"Vocabulary",p:1,q:"What does “detect” mean?",a:"Notice, discover or identify something."},
+  {c:"Vocabulary",q:"What is a recruit?",a:"A new person who has just joined an organisation or training programme."},
+  {c:"Vocabulary",q:"Give the synonym for “cadet” studied in class.",a:"Recruit."},
+  {c:"Vocabulary",q:"What does “mastermind” mean?",a:"A genius who plans something complicated."},
+  {c:"Vocabulary",q:"Give a synonym for “evil”.",a:"Bad / wicked."},
+  {c:"Vocabulary",q:"What does “bring down” mean in a spy story?",a:"Defeat or stop an enemy."},
+  {c:"Vocabulary",q:"Translate: “décrypter / décoder”.",a:"Decipher / break a code."},
+  {c:"Vocabulary",q:"What does “go undercover” mean?",a:"Work secretly with a false identity."},
+  {c:"Vocabulary",q:"Translate: “résoudre des énigmes”.",a:"Solve puzzles."},
+  {c:"Vocabulary",q:"What is a contestant?",a:"A person who takes part in a competition or TV show."},
+  {c:"Vocabulary",q:"What does “apply for” mean?",a:"Ask officially to be considered for a place or position."},
+  {c:"Vocabulary",q:"Give an English adjective for “courageux”.",a:"Brave."},
+  {c:"Vocabulary",q:"Give an English adjective for “déterminé”.",a:"Determined."},
+  {c:"Vocabulary",q:"Give an English adjective for “persuasif”.",a:"Persuasive."},
+  {c:"Vocabulary",q:"Give an English adjective for “doué / talentueux”.",a:"Talented."},
+  {c:"Vocabulary",q:"Give an English adjective for “difficile mais stimulant”.",a:"Challenging."},
+  {c:"Vocabulary",q:"Translate: “espionner / surveiller”.",a:"Spy on."},
+  {c:"Vocabulary",q:"Translate: “une affiche”.",a:"A poster."},
+  {c:"Vocabulary",q:"What does “detect” mean?",a:"Notice, discover or identify something."},
 
-  {c:"Superlatives",p:2,q:"Complete: strong → the ______",a:"the strongest"},
-  {c:"Superlatives",p:2,q:"Complete: quick → the ______",a:"the quickest"},
-  {c:"Superlatives",p:2,q:"Complete: long → the ______",a:"the longest"},
-  {c:"Superlatives",p:2,q:"Complete: good → the ______",a:"the best"},
-  {c:"Superlatives",p:2,q:"Complete: talented → the ______",a:"the most talented"},
-  {c:"Superlatives",p:2,q:"Translate: “le meilleur espion”.",a:"the best spy"},
-  {c:"Superlatives",p:2,q:"Correct the sentence: “She is the most strongest spy.”",a:"She is the strongest spy."},
-  {c:"Superlatives",p:2,q:"Make a superlative sentence with “brave”.",a:"Example: She is the bravest recruit."},
-  {c:"Superlatives",p:2,q:"Which is correct: “the more intelligent” or “the most intelligent”?",a:"The most intelligent."},
-  {c:"Superlatives",p:2,q:"What word usually comes before a superlative?",a:"The."},
+  {c:"Superlatives",q:"Complete: strong → the ______",a:"the strongest"},
+  {c:"Superlatives",q:"Complete: quick → the ______",a:"the quickest"},
+  {c:"Superlatives",q:"Complete: long → the ______",a:"the longest"},
+  {c:"Superlatives",q:"Complete: good → the ______",a:"the best"},
+  {c:"Superlatives",q:"Complete: talented → the ______",a:"the most talented"},
+  {c:"Superlatives",q:"Translate: “le meilleur espion”.",a:"the best spy"},
+  {c:"Superlatives",q:"Correct the sentence: “She is the most strongest spy.”",a:"She is the strongest spy."},
+  {c:"Superlatives",q:"Make a superlative sentence with “brave”.",a:"Example: She is the bravest recruit."},
+  {c:"Superlatives",q:"Which is correct: “the more intelligent” or “the most intelligent”?",a:"The most intelligent."},
+  {c:"Superlatives",q:"What word usually comes before a superlative?",a:"The."},
 
-  {c:"Capacity",p:2,q:"Complete: Complete with the modal used to express ability: A spy ___ break codes.",a:"can"},
-  {c:"Capacity",p:2,q:"Complete with be able to: “She ___ solve difficult puzzles.”",a:"She is able to solve difficult puzzles."},
-  {c:"Capacity",p:2,q:"Complete with be capable of: “He ___ working undercover.”",a:"He is capable of working undercover."},
-  {c:"Capacity",p:2,q:"Complete: “She is good at ___ codes.”",a:"breaking / deciphering"},
-  {c:"Capacity",p:2,q:"Which form follows “can”: base form or -ing?",a:"The base form, without “to”."},
-  {c:"Capacity",p:2,q:"Which form follows “be capable of”?",a:"Verb + -ing."},
-  {c:"Capacity",p:2,q:"Correct: “He can to decipher codes.”",a:"He can decipher codes."},
-  {c:"Capacity",p:2,q:"Correct: “She is capable to solve puzzles.”",a:"She is capable of solving puzzles."},
-  {c:"Capacity",p:2,q:"Complete: “He has mastered ___.” Use the verb ski.",a:"He has mastered skiing."},
-  {c:"Capacity",p:2,q:"Make this sentence negative: “She can break codes.”",a:"She cannot / can't break codes."},
+  {c:"Capacity",q:"Complete with the modal used to express ability: A spy ___ break codes.",a:"can"},
+  {c:"Capacity",q:"Complete with be able to: “She ___ solve difficult puzzles.”",a:"She is able to solve difficult puzzles."},
+  {c:"Capacity",q:"Complete with be capable of: “He ___ working undercover.”",a:"He is capable of working undercover."},
+  {c:"Capacity",q:"Complete: “She is good at ___ codes.”",a:"breaking / deciphering"},
+  {c:"Capacity",q:"Which form follows “can”: base form or -ing?",a:"The base form, without “to”."},
+  {c:"Capacity",q:"Which form follows “be capable of”?",a:"Verb + -ing."},
+  {c:"Capacity",q:"Correct: “He can to decipher codes.”",a:"He can decipher codes."},
+  {c:"Capacity",q:"Correct: “She is capable to solve puzzles.”",a:"She is capable of solving puzzles."},
+  {c:"Capacity",q:"Complete: “He has mastered ___.” Use the verb ski.",a:"He has mastered skiing."},
+  {c:"Capacity",q:"Make this sentence negative: “She can break codes.”",a:"She cannot / can't break codes."},
 
-  {c:"Course",p:3,q:"What kind of document was the first Spy School document?",a:"A poster."},
-  {c:"Course",p:3,q:"Why was the Spy School poster used first?",a:"As an anticipation document to make hypotheses about the programme."},
-  {c:"Course",p:3,q:"What could you say about the purpose of the Spy School poster?",a:"It advertises the programme and makes young viewers want to watch it."},
-  {c:"Course",p:3,q:"Who is the likely target audience of the Spy School poster?",a:"Mainly children and young viewers."},
-  {c:"Course",p:3,q:"What do children learn to do in Spy School?",a:"They train as spies, solve puzzles, break codes and develop physical and problem-solving skills."},
-  {c:"Course",p:3,q:"Who must the children try to stop in Spy School?",a:"Goldfist."},
-  {c:"Course",p:3,q:"What kind of document is The Recruit image?",a:"A book cover."},
-  {c:"Course",p:3,q:"What is CHERUB?",a:"An secret organisation that trains agents under seventeen for espionage missions."},
-  {c:"Course",p:3,q:"What do CHERUB agents do?",a:"They collect information, carry out surveillance and take part in espionage missions."},
-  {c:"Course",p:3,q:"Who is James in The Recruit?",a:"The latest CHERUB recruit."},
+  {c:"Course",q:"What kind of document was the first Spy School document?",a:"A poster."},
+  {c:"Course",q:"Why was the Spy School poster used first?",a:"As an anticipation document to make hypotheses about the programme."},
+  {c:"Course",q:"What could you say about the purpose of the Spy School poster?",a:"It advertises the programme and makes young viewers want to watch it."},
+  {c:"Course",q:"Who is the likely target audience of the Spy School poster?",a:"Mainly children and young viewers."},
+  {c:"Course",q:"What do children learn to do in Spy School?",a:"They train as spies, solve puzzles, break codes and develop physical and problem-solving skills."},
+  {c:"Course",q:"Who must the children try to stop in Spy School?",a:"Goldfist."},
+  {c:"Course",q:"What kind of document is The Recruit image?",a:"A book cover."},
+  {c:"Course",q:"What is CHERUB?",a:"A secret organisation that trains agents under seventeen for espionage missions."},
+  {c:"Course",q:"What do CHERUB agents do?",a:"They collect information, carry out surveillance and take part in espionage missions."},
+  {c:"Course",q:"Who is James in The Recruit?",a:"The latest CHERUB recruit."},
 
-  {c:"Methodology",p:2,q:"Name two things to identify when presenting a document.",a:"Type, subject/theme, creator/author, date, source, purpose or target audience."},
-  {c:"Methodology",p:2,q:"How can you begin describing an image?",a:"In the foreground… / In the background…"},
-  {c:"Methodology",p:2,q:"What should you mention if a logo is visible?",a:"Describe the logo and explain what it suggests about the document."},
-  {c:"Methodology",p:2,q:"What should you say about colours in an image?",a:"Describe the main colours and explain the atmosphere or effect they create."},
-  {c:"Methodology",p:2,q:"What does “target audience” mean?",a:"The people the document is intended for."},
-  {c:"Methodology",p:2,q:"What does “purpose” mean?",a:"The objective of the document: inform, advertise, persuade, entertain, etc."},
-  {c:"Methodology",p:2,q:"If no publication date is given, what should you do?",a:"Do not invent one. Say that the date is not given."},
-  {c:"Methodology",p:2,q:"Translate: “au premier plan”.",a:"In the foreground."},
-  {c:"Methodology",p:2,q:"Translate: “à l’arrière-plan”.",a:"In the background."},
-  {c:"Methodology",p:2,q:"When presenting a book cover, name two pieces of information to give.",a:"Any two: the title, author, publication date (if given), topic, description, purpose or target audience."}
+  {c:"Methodology",q:"Name two things to identify when presenting a document.",a:"Type, subject/theme, creator/author, date, source, purpose or target audience."},
+  {c:"Methodology",q:"How can you begin describing an image?",a:"In the foreground… / In the background…"},
+  {c:"Methodology",q:"What should you mention if a logo is visible?",a:"Describe the logo and explain what it suggests about the document."},
+  {c:"Methodology",q:"What should you say about colours in an image?",a:"Describe the main colours and explain the atmosphere or effect they create."},
+  {c:"Methodology",q:"What does “target audience” mean?",a:"The people the document is intended for."},
+  {c:"Methodology",q:"What does “purpose” mean?",a:"The objective of the document: inform, advertise, persuade, entertain, etc."},
+  {c:"Methodology",q:"If no publication date is given, what should you do?",a:"Do not invent one. Say that the date is not given."},
+  {c:"Methodology",q:"Translate: “au premier plan”.",a:"In the foreground."},
+  {c:"Methodology",q:"Translate: “à l’arrière-plan”.",a:"In the background."},
+  {c:"Methodology",q:"When presenting a book cover, name two pieces of information to give.",a:"Any two: the title, author, publication date (if given), topic, description, purpose or target audience."}
 ];
 
 
 const $=id=>document.getElementById(id);
-const storageKey="goldfist-mission-v3";
+const storageKey="goldfist-mission-v5";
 const allParts=["Vocabulary","Superlatives","Capacity","Course","Methodology"];
-const eventTypes=["intel","steal","shield","penalty","fast","double","backup"];
-let state=null, tick=null, saved=null;
+const pointsPerAnswer=2;
+let state=null, saved=null;
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
 function save(){try{localStorage.setItem(storageKey,JSON.stringify(state));}catch(e){$("result").textContent="This browser cannot save progress. Keep this page open.";}}
 function createTeamInputs(){
@@ -244,13 +220,11 @@ function renderScoreboard(){
  $("scoreboard").replaceChildren();
  state.teams.forEach((t,i)=>{
   const card=document.createElement("div");card.className="teamCard"+(i===state.respondent?" active":"");
-  card.innerHTML=`<div class="shield">${t.shield?"🛡":""}</div><div class="teamName">${escapeHtml(t.name)}</div><div class="score">${t.score}</div>`;
+  card.innerHTML=`<div class="teamName">${escapeHtml(t.name)}</div><div class="score">${t.score}</div>`;
   $("scoreboard").append(card);
  });
  $("activeTeamLabel").textContent=state.teams[state.respondent].name;
- const select=$("finalTeam"),old=select.value;select.replaceChildren();
- state.teams.forEach((t,i)=>{const option=document.createElement("option");option.value=i;option.textContent=t.name;select.append(option);});
- if(old)select.value=old;
+
 }
 function renderCategories(){
  $("categories").replaceChildren();
@@ -259,16 +233,6 @@ function renderCategories(){
   const b=document.createElement("button");b.className="cat"+(c===state.category?" active":"");b.textContent=c==="All"?"All selected parts":c;
   b.onclick=()=>{state.category=c;save();renderCategories();};$("categories").append(b);
  });
-}
-function updateTimer(){
- if(!state||!state.fast)return;
- const f=state.fast;
- if(f.started&&!f.received){
-  const left=Math.max(0,Math.ceil((f.deadline-Date.now())/1000));$("timer").textContent=left?`${left} s`:"Time up — base points only";
- }else $("timer").textContent=f.received?(f.inTime?"Answer received in time":"Answer received after 5 seconds"):"Ready for the 5-second challenge";
- $("startTimer").disabled=f.started||state.resolved;
- $("answerReceived").disabled=!f.started||f.received||state.resolved;
- $("correctAnswer").disabled=state.resolved||!f.started||!f.received;
 }
 function render(){
  $("setup").style.display="none";$("game").style.display="block";
@@ -280,70 +244,40 @@ function render(){
  $("roundCount").textContent=`ROUND ${round} / ${rounds}`;
  $("qCount").textContent=`Turn ${turn} / ${state.teams.length}`;
  const roundEnded=state.resolved&&state.completed%state.teams.length===0;
- $("nextQuestion").textContent=roundEnded?"Next round":"Next question";
- $("qValue").textContent=`${q.p*state.multiplier} pts${state.multiplier===2?" · DOUBLE":""}${state.fast?" · +1 if answered within 5 seconds":""}`;
+ $("nextQuestion").textContent=state.completed===state.total?"Mission complete":roundEnded?"Next round":"Next question";
+ $("qValue").textContent="2 pts";
  $("progressBar").style.width=100*state.completed/state.total+"%";
- $("eventBanner").textContent=state.event;$("eventBanner").style.display=state.event?"block":"none";
+
  $("result").textContent=state.result||"";
  $("correctAnswer").disabled=state.resolved;
  $("incorrectAnswer").disabled=state.resolved;
  $("nextQuestion").disabled=!state.resolved||state.completed===state.total;
- $("showAnswer").disabled=!!state.fast&&!state.fast.received&&!state.resolved;
- $("doublePoints").disabled=state.resolved||state.revealed||state.multiplier===2||state.teams[state.respondent].doubleUsed;
- $("startTimer").classList.toggle("hidden",!state.fast);
- $("answerReceived").classList.toggle("hidden",!state.fast);
- $("timer").textContent="";updateTimer();
- $("finalBox").style.display=state.completed===state.total?"block":"none";
- const tasks={Vocabulary:"Give an English word or expression studied in this unit and explain its meaning.",Superlatives:"Make a correct sentence about a spy using a superlative.",Capacity:"Make a correct sentence about a spy using can, be able to, be capable of, be good at or master.",Course:"Give one correct fact about Spy School or The Recruit.",Methodology:"Name two things to identify when presenting a document."};
- $("finalChallenges").replaceChildren();
- (state.selected||allParts).forEach(c=>{const paragraph=document.createElement("p");paragraph.textContent=c+": "+tasks[c];$("finalChallenges").append(paragraph);});
- $("finalContent").classList.toggle("hidden",!state.finalLaunched);
- $("launchFinal").disabled=state.finalLaunched;
- $("awardFinal").disabled=state.finalAwarded;
- $("finalResult").textContent=state.finalResult||"";
- clearInterval(tick);tick=state.fast?setInterval(updateTimer,200):null;
-}
-function penalty(i){
- const t=state.teams[i];if(t.shield){t.shield=false;return false;}t.score-=1;return true;
-}
-function applyEvent(type){
- const owner=state.owner,t=state.teams[owner];
- if(type==="intel"){t.score+=2;state.event=`BONUS INTEL — ${t.name} gains 2 points.`;}
- if(type==="shield"){t.shield=true;state.event=`SECURE CHANNEL — ${t.name} has a shield against the next −1 penalty.`;}
- if(type==="penalty"){state.event=penalty(owner)?`DOUBLE AGENT — ${t.name} loses 1 point.`:`SHIELD USED — ${t.name} blocks the penalty.`;}
- if(type==="steal"){
-  const others=state.teams.map((_,i)=>i).filter(i=>i!==owner),victim=others[Math.floor(Math.random()*others.length)];
-  if(penalty(victim)){t.score+=1;state.event=`STOLEN FILE — ${t.name} steals 1 point from ${state.teams[victim].name}.`;}
-  else state.event=`STOLEN FILE BLOCKED — ${state.teams[victim].name} uses a shield. No points transferred.`;
+ $("showAnswer").disabled=false;
+ const complete=state.completed===state.total;
+ $("endBox").hidden=!complete;
+ if(complete){
+  const ranked=[...state.teams].sort((a,b)=>b.score-a.score),best=ranked[0].score,winners=ranked.filter(t=>t.score===best).map(t=>t.name);
+  $("winnerLabel").textContent=`${winners.length===state.teams.length?"All teams are tied":winners.join(" / ")+(winners.length>1?" share first place":" wins")} with ${best} points.`;
+  $("ranking").replaceChildren();
+  let place=1;ranked.forEach((t,i)=>{if(i>0&&t.score!==ranked[i-1].score)place=i+1;const li=document.createElement("li");li.value=place;li.textContent=`${t.name}: ${t.score} points`;$("ranking").append(li);});
  }
- if(type==="double"){state.multiplier=2;state.event=`CLASSIFIED FILE — ${t.name} answers this question for double points.`;}
- if(type==="fast"){state.fast={started:false,received:false,inTime:false,deadline:0};state.event=`FAST DECISION — ${t.name}: start the timer when ready. A correct answer received within 5 seconds earns +1.`;}
- if(type==="backup"){
-  const others=state.teams.map((_,i)=>i).filter(i=>i!==owner);state.respondent=others[Math.floor(Math.random()*others.length)];state.backup=owner;
-  state.event=`BACKUP TEAM — ${state.teams[state.respondent].name} answers. If correct, it earns the question points and both teams receive +1.`;
- }
+
 }
 function pickQuestion(){
  let pool=bank.map((_,i)=>i).filter(i=>!state.used.includes(i)&&(state.selected||allParts).includes(bank[i].c)&&(state.category==="All"||bank[i].c===state.category));
  if(!pool.length){state.result="No unused questions in this category. Select another category, then Next question.";save();render();return;}
  state.current=pool[Math.floor(Math.random()*pool.length)];state.used.push(state.current);
- state.owner=(state.used.length-1)%state.teams.length;state.respondent=state.owner;
- state.resolved=false;state.revealed=false;state.multiplier=1;state.backup=null;state.fast=null;state.event="";state.result="";
- if(state.used.length%3===0){if(!state.eventDeck.length)state.eventDeck=[...eventTypes].sort(()=>Math.random()-.5);applyEvent(state.eventDeck.pop());}
+ state.respondent=(state.used.length-1)%state.teams.length;
+ state.resolved=false;state.revealed=false;state.result="";
  save();render();
 }
 function resolve(correct){
  if(state.resolved)return;
- if(correct&&state.fast&&(!state.fast.started||!state.fast.received))return;
- const t=state.teams[state.respondent];let points=0;
- if(correct){
-  points=bank[state.current].p*state.multiplier;
-  if(state.fast&&state.fast.inTime)points++;
-  if(state.backup!==null){points++;state.teams[state.backup].score++;}
-  t.score+=points;
- }
+
+ const t=state.teams[state.respondent],points=correct?pointsPerAnswer:0;
+ t.score+=points;
  state.resolved=true;state.revealed=true;state.completed++;
- state.result=correct?`${t.name}: +${points} points${state.backup!==null?`. ${state.teams[state.backup].name}: +1 point`:""}.`:`No question points. Accepted answer shown below.`;
+ state.result=`${t.name}: +${points} points. Accepted answer shown below.`;
  if(state.completed%state.teams.length===0){const best=Math.max(...state.teams.map(t=>t.score));const leaders=state.teams.filter(t=>t.score===best).map(t=>t.name).join(" / ");state.result+=` Round ${state.completed/state.teams.length} complete. Leading: ${leaders} (${best} pts).`;}
 
  save();render();
@@ -364,25 +298,12 @@ $("clearParts").onclick=()=>{$("revisionParts").querySelectorAll("input").forEac
 createTeamInputs();selectionSummary();
 $("startGame").onclick=()=>{
  if(!selection().length||!missionSize())return;
- state={teams:[...$("teamNames").querySelectorAll("input")].map((x,i)=>({name:x.value.trim()||`Team ${i+1}`,score:0,shield:false,doubleUsed:false})),selected:selection(),category:"All",total:missionSize(),used:[],completed:0,current:null,respondent:0,owner:0,resolved:false,finalLaunched:false,finalAwarded:false,eventDeck:[]};pickQuestion();
+ state={teams:[...$("teamNames").querySelectorAll("input")].map((x,i)=>({name:x.value.trim()||`Team ${i+1}`,score:0})),selected:selection(),category:"All",total:missionSize(),used:[],completed:0,current:null,respondent:0,resolved:false};pickQuestion();
 };
 $("correctAnswer").onclick=()=>resolve(true);$("incorrectAnswer").onclick=()=>resolve(false);
 $("nextQuestion").onclick=()=>{if(state.resolved&&state.completed<state.total)pickQuestion();};
-$("showAnswer").onclick=()=>{if(state.fast&&!state.fast.received&&!state.resolved)return;state.revealed=!state.revealed;save();render();};
-$("doublePoints").onclick=()=>{
- const t=state.teams[state.respondent];if(state.resolved||state.revealed||state.multiplier===2||t.doubleUsed)return;
- t.doubleUsed=true;state.multiplier=2;state.event+=(state.event?" ":"")+`DOUBLE POINTS — ${t.name} uses its once-per-mission double.`;save();render();
-};
-$("startTimer").onclick=()=>{if(!state.fast||state.fast.started||state.resolved)return;state.fast.started=true;state.fast.deadline=Date.now()+5000;save();render();};
-$("answerReceived").onclick=()=>{if(!state.fast||!state.fast.started||state.fast.received||state.resolved)return;state.fast.received=true;state.fast.inTime=Date.now()<=state.fast.deadline;save();render();};
-$("launchFinal").onclick=()=>{if(state.completed!==state.total)return;state.finalLaunched=true;save();render();};
-$("awardFinal").onclick=()=>{
- if(!state.finalLaunched||state.finalAwarded)return;
- const i=Number($("finalTeam").value);state.teams[i].score+=5;state.finalAwarded=true;
- const best=Math.max(...state.teams.map(t=>t.score)),winners=state.teams.filter(t=>t.score===best).map(t=>t.name).join(" / ");
- state.finalResult=`${state.teams[i].name}: final bonus +5. Mission complete. ${winners} wins with ${best} points.`;save();render();
-};
-$("resetGame").onclick=()=>{if(!confirm("Reset the whole mission and all scores?"))return;clearInterval(tick);state=null;saved=null;try{localStorage.removeItem(storageKey);}catch(e){}$("game").style.display="none";$("setup").style.display="grid";$("resumeGame").classList.add("hidden");};
+$("showAnswer").onclick=()=>{state.revealed=!state.revealed;save();render();};
+$("resetGame").onclick=()=>{if(!confirm("Reset the whole mission and all scores?"))return;state=null;saved=null;try{localStorage.removeItem(storageKey);}catch(e){}$("game").style.display="none";$("setup").style.display="grid";$("resumeGame").classList.add("hidden");};
 try{saved=JSON.parse(localStorage.getItem(storageKey));if(saved&&Array.isArray(saved.teams)&&saved.teams.length>=4&&saved.teams.length<=9&&Number.isInteger(saved.current)&&bank[saved.current])$("resumeGame").classList.remove("hidden");else saved=null;}catch(e){}
 $("resumeGame").onclick=()=>{if(!saved)return;state=saved;render();};
 </script>
